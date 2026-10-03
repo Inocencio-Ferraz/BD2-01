@@ -36,16 +36,14 @@ Session = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 
 def create_tables() -> None:
-    # Importa os modelos para registrar todas as tabelas no metadata.
-    import model.cliente  # noqa: F401
-    import model.funcionario  # noqa: F401
-    import model.itemvenda  # noqa: F401
-    import model.produto  # noqa: F401
-    import model.venda  # noqa: F401
+    import model.cliente
+    import model.funcionario
+    import model.itemvenda
+    import model.produto
+    import model.venda
 
     Base.metadata.create_all(bind=engine)
 
 
 def get_session():
-    """Fornece uma sessão para uso com `with get_session() as session`."""
     return Session()

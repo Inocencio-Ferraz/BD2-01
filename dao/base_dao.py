@@ -8,8 +8,6 @@ ModelT = TypeVar("ModelT")
 
 
 class BaseDAO(Generic[ModelT]):
-    """Operações CRUD comuns aos DAOs das entidades ORM."""
-
     model: type[ModelT]
 
     def __init__(self, session: Session) -> None:
@@ -29,14 +27,12 @@ class BaseDAO(Generic[ModelT]):
             raise
 
     def cadastrar(self, entidade: ModelT, *, commit: bool = True) -> ModelT:
-        """Alias mantido para compatibilidade com os controllers existentes."""
         return self.criar(entidade, commit=commit)
 
     def listar(self) -> list[ModelT]:
         return list(self.session.scalars(select(self.model)).all())
 
     def listar_todos(self) -> list[ModelT]:
-        """Alias mantido para compatibilidade com os DAOs anteriores."""
         return self.listar()
 
     def buscar_por_id(self, identificador: int) -> ModelT | None:
