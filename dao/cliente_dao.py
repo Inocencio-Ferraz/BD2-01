@@ -1,24 +1,6 @@
-from model.cliente import cliente
+from dao.base_dao import BaseDAO
+from model.cliente import Cliente
 
 
-class FuncionarioDAO:
-
-    def __init__(self, session):
-        self.session = session
-
-    def cadastrar(self, funcionario):
-        self.session.add(funcionario)
-        self.session.commit()
-
-    def listar_todos(self):
-        return self.session.query(cliente).all()
-
-    def buscar_por_id(self, id):
-        return self.session.query(cliente).filter_by(id=id).first()
-
-    def atualizar(self, funcionario):
-        self.session.commit()
-
-    def remover(self, funcionario):
-        self.session.delete(funcionario)
-        self.session.commit()
+class ClienteDAO(BaseDAO[Cliente]):
+    model = Cliente

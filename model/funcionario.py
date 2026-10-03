@@ -1,28 +1,17 @@
-class funcionario:
- def __init__(self, id, name, cpf, funcao):
+from __future__ import annotations
 
-    self.id = id
-    self.name = name
-    self.cpf = cpf
-    self.funcao = funcao
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
- def mostrar_dados(self):
-    print(f"ID: {self.id}")
-    print(f"Nome: {self.id}")
-    print(f"ID: {self.id}")
-    print(f"ID: {self.id}")
+from database.base import Base
 
- def alterar_funcao(self, nova_funcao):
-        self.funcao = nova_funcao
-        print(f"A função foi alterada para {nova_funcao}")
 
- def alterar_funcao(self, nova_funcao):
-        self.funcao = nova_funcao
-        print(f"A função foi alterada para {nova_funcao}")
- def registrar_entrada(self):
-        self.presente = True
-        print(f"{self.nome} entrou na padaria.")
+class Funcionario(Base):
+    __tablename__ = "funcionario"
 
- def registrar_saida(self):
-        self.presente = False
-        print(f"{self.nome} saiu da padaria.")    
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    nome: Mapped[str] = mapped_column(String(120), nullable=False)
+    cpf: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
+    funcao: Mapped[str] = mapped_column(String(80), nullable=False)
+
+    vendas: Mapped[list[Venda]] = relationship(back_populates="funcionario")

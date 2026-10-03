@@ -1,8 +1,21 @@
-class itemvenda():
-    def __init__(self, id, qunatidade, preco_unitario, venda_id, produto_id):
+from __future__ import annotations
 
-        self.id = id
-        self.qunatidade = qunatidade
-        self.preco_unitario = preco_unitario
-        self.venda_id = venda_id
-        self.produto_id = produto_id
+from decimal import Decimal
+
+from sqlalchemy import ForeignKey, Integer, Numeric
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from database.base import Base
+
+
+class ItemVenda(Base):
+    __tablename__ = "item_venda"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    venda_id: Mapped[int] = mapped_column(ForeignKey("venda.id"), nullable=False)
+    produto_id: Mapped[int] = mapped_column(ForeignKey("produto.id"), nullable=False)
+    quantidade: Mapped[int] = mapped_column(Integer, nullable=False)
+    preco_unitario: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+
+    venda: Mapped[Venda] = relationship(back_populates="itens")
+    produto: Mapped[Produto] = relationship(back_populates="itens_venda")
