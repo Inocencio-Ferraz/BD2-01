@@ -9,7 +9,6 @@ Sistema de gerenciamento de uma padaria, desenvolvido para a disciplina de Banco
 - Python
 - MariaDB
 - SQLAlchemy
-- MariaDB Connector/Python
 
 ## Modelagem
 
