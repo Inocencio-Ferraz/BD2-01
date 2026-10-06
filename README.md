@@ -16,26 +16,29 @@ Sistema de gerenciamento de uma padaria, desenvolvido para a disciplina de Banco
   <tr>
     <td align="center">
       <a href="https://github.com/Inocencio-Ferraz">
-        <img src="https://github.com/Inocencio-Ferraz.png" width="100px;" alt="Inocencio-Ferraz"/>
-        <br />
-        <sub><b>Inocencio-Ferraz</b></sub>
+        <img src="https://github.com/Inocencio-Ferraz.png" width="100" alt="Inocencio-Ferraz">
+        <br>
+        <b>Inocencio-Ferraz</b>
       </a>
     </td>
 
     <td align="center">
       <a href="https://github.com/clebio0901">
-        <img src="https://github.com/clebio0901.png" width="100px;" alt="Clebio-Luis"/>
-        <br />
-        <sub><b>Clebio-Luis</b></sub>
+        <img src="https://github.com/clebio0901.png" width="100" alt="Clebio-Luis">
+        <br>
+        <b>Clebio-Luis</b>
       </a>
     </td>
 
     <td align="center">
       <a href="https://github.com/David-ksantos">
-        <img src="https://github.com/David-ksantos.png" width="100px;" alt="David Kleber"/>
-        <br />
-        <sub><b>David Kleber</b></sub>
+        <img src="https://github.com/David-ksantos.png" width="100" alt="David-Ksantos">
+        <br>
+        <b>David-Ksantos</b>
       </a>
+    </td>
+  </tr>
+</table>
     </td>
   </tr>
 </table>
