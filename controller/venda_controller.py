@@ -1,4 +1,6 @@
 from dto.itemvenda_dto import ItemVendaDTO
+from dto.itemvenda_entrada import ItemVendaEntrada
+from dto.venda_entrada import VendaEntrada
 from dto.venda_dto import VendaDTO
 from service.venda_service import VendaService
 
@@ -7,32 +9,24 @@ class VendaController:
     def __init__(self, session) -> None:
         self.service = VendaService(session)
 
-    def criar_venda(self, venda: VendaDTO) -> VendaDTO:
-        itens = [
-            {"produto_id": item.produto_id, "quantidade": item.quantidade}
-            for item in venda.itens
-        ]
-        entidade = self.service.criar_venda(venda.cliente_id, venda.funcionario_id, itens)
+    def criar_venda(self, venda: VendaEntrada) -> VendaDTO:
+        entidade = self.service.criar_venda(venda)
         return VendaDTO.de_entidade(entidade)
 
     def adicionar_item(
         self,
         venda_id: int,
-        produto_id: int | ItemVendaDTO,
-        quantidade: int | None = None,
+        item: ItemVendaEntrada,
     ) -> ItemVendaDTO:
-        if isinstance(produto_id, ItemVendaDTO):
-            quantidade = produto_id.quantidade
-            produto_id = produto_id.produto_id
-        entidade = self.service.adicionar_item(venda_id, produto_id, quantidade)
+        entidade = self.service.adicionar_item(venda_id, item)
         return ItemVendaDTO.de_entidade(entidade)
 
-    def adicionar_itens(self, venda_id: int, itens: list[ItemVendaDTO]) -> list[ItemVendaDTO]:
-        entradas = [
-            {"produto_id": item.produto_id, "quantidade": item.quantidade}
-            for item in itens
-        ]
-        entidades = self.service.adicionar_itens(venda_id, entradas)
+    def adicionar_itens(
+        self,
+        venda_id: int,
+        itens: list[ItemVendaEntrada],
+    ) -> list[ItemVendaDTO]:
+        entidades = self.service.adicionar_itens(venda_id, itens)
         return [ItemVendaDTO.de_entidade(item) for item in entidades]
 
     def buscar_venda_por_id(self, venda_id: int) -> VendaDTO | None:

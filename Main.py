@@ -5,8 +5,8 @@ from controller.funcionario_controller import FuncionarioController
 from controller.produto_controller import ProdutoController
 from controller.venda_controller import VendaController
 from database.connection import Session
-from dto.itemvenda_dto import ItemVendaDTO
-from dto.venda_dto import VendaDTO
+from dto.itemvenda_entrada import ItemVendaEntrada
+from dto.venda_entrada import VendaEntrada
 
 
 def ler_inteiro(mensagem: str) -> int:
@@ -313,17 +313,12 @@ def menu_vendas(controller: VendaController) -> None:
                     produto_id = ler_inteiro("ID do produto: ")
                     quantidade = ler_inteiro("Quantidade: ")
                     itens.append(
-                        ItemVendaDTO(
-                            venda_id=0,
-                            produto_id=produto_id,
-                            quantidade=quantidade,
-                            preco_unitario=Decimal("0.00"),
-                        )
+                        ItemVendaEntrada(produto_id=produto_id, quantidade=quantidade)
                     )
                     if input("Adicionar outro produto? (s/n): ").strip().lower() != "s":
                         break
                 venda = controller.criar_venda(
-                    VendaDTO(cliente_id=cliente_id, funcionario_id=funcionario_id, itens=itens)
+                    VendaEntrada(cliente_id=cliente_id, funcionario_id=funcionario_id, itens=itens)
                 )
                 print("Venda concluída:")
                 exibir_venda(venda)

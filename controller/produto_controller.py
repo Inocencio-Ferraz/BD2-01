@@ -1,4 +1,3 @@
-from dataclasses import asdict
 from decimal import Decimal
 
 from dto.produto_dto import ProdutoDTO
@@ -11,22 +10,12 @@ class ProdutoController:
 
     def cadastrar_produto(
         self,
-        nome: str | ProdutoDTO,
-        preco: Decimal | int | str | None = None,
-        quantidade_estoque: int | None = None,
-        categoria: str | None = None,
+        nome: str,
+        preco: Decimal | int | str,
+        quantidade_estoque: int,
+        categoria: str,
     ) -> ProdutoDTO:
-        dto = (
-            nome
-            if isinstance(nome, ProdutoDTO)
-            else ProdutoDTO(nome, preco, quantidade_estoque, categoria)
-        )
-        entidade = self.service.cadastrar(
-            dto.nome,
-            dto.preco,
-            dto.quantidade_estoque,
-            dto.categoria,
-        )
+        entidade = self.service.cadastrar(nome, preco, quantidade_estoque, categoria)
         return ProdutoDTO.de_entidade(entidade)
 
     def listar_produtos(self) -> list[ProdutoDTO]:
@@ -36,10 +25,8 @@ class ProdutoController:
         produto = self.service.buscar_por_id(produto_id)
         return ProdutoDTO.de_entidade(produto) if produto is not None else None
 
-    def atualizar_produto(self, produto_id: int, dados: dict | ProdutoDTO) -> ProdutoDTO | None:
-        atualizacao = asdict(dados) if isinstance(dados, ProdutoDTO) else dict(dados)
-        atualizacao.pop("id", None)
-        produto = self.service.atualizar(produto_id, atualizacao)
+    def atualizar_produto(self, produto_id: int, dados: dict) -> ProdutoDTO | None:
+        produto = self.service.atualizar(produto_id, dados)
         return ProdutoDTO.de_entidade(produto) if produto is not None else None
 
     def remover_produto(self, produto_id: int) -> bool:

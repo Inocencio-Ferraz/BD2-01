@@ -8,6 +8,8 @@ from dao.funcionario_dao import FuncionarioDAO
 from dao.itemvenda_dao import ItemVendaDAO
 from dao.produto_dao import ProdutoDAO
 from dao.venda_dao import VendaDAO
+from dto.itemvenda_entrada import ItemVendaEntrada
+from dto.venda_entrada import VendaEntrada
 from model.itemvenda import ItemVenda
 from model.venda import Venda
 
@@ -28,20 +30,24 @@ class VendaService:
         return quantidade
 
     @classmethod
-    def _normalizar_itens(cls, itens: Iterable[dict]) -> list[tuple[int, int]]:
+    def _normalizar_itens(
+        cls,
+        itens: Iterable[ItemVendaEntrada],
+    ) -> list[tuple[int, int]]:
         if isinstance(itens, (str, bytes, dict)):
-            raise ValueError("Itens deve ser uma coleção de dicionários com produto_id e quantidade.")
+            raise ValueError("Itens deve ser uma coleção de itens.")
         normalizados = []
         try:
             for item in itens:
-                if not isinstance(item, dict) or "produto_id" not in item or "quantidade" not in item:
+                if not isinstance(item, ItemVendaEntrada):
                     raise ValueError("Cada item deve informar produto_id e quantidade.")
-                produto_id = item["produto_id"]
+                produto_id = item.produto_id
+                quantidade = item.quantidade
                 if isinstance(produto_id, bool) or not isinstance(produto_id, int) or produto_id <= 0:
                     raise ValueError("produto_id deve ser um inteiro positivo.")
-                normalizados.append((produto_id, cls._validar_quantidade(item["quantidade"])))
+                normalizados.append((produto_id, cls._validar_quantidade(quantidade)))
         except TypeError:
-            raise ValueError("Itens deve ser uma coleção iterável de dicionários.") from None
+            raise ValueError("Itens deve ser uma coleção iterável de itens.") from None
         if not normalizados:
             raise ValueError("A venda deve conter pelo menos um item.")
         return normalizados
@@ -80,20 +86,15 @@ class VendaService:
         self.venda_dao.atualizar(venda.id, {"valor_total": novo_total}, commit=False)
         return item
 
-    def criar_venda(
-        self,
-        cliente_id: int,
-        funcionario_id: int,
-        itens: Iterable[dict],
-    ) -> Venda:
-        itens_normalizados = self._normalizar_itens(itens)
+    def criar_venda(self, entrada: VendaEntrada) -> Venda:
+        itens_normalizados = self._normalizar_itens(entrada.itens)
         try:
-            cliente = self.cliente_dao.buscar_por_id(cliente_id)
+            cliente = self.cliente_dao.buscar_por_id(entrada.cliente_id)
             if cliente is None:
-                raise ValueError(f"Cliente {cliente_id} não existe.")
-            funcionario = self.funcionario_dao.buscar_por_id(funcionario_id)
+                raise ValueError(f"Cliente {entrada.cliente_id} não existe.")
+            funcionario = self.funcionario_dao.buscar_por_id(entrada.funcionario_id)
             if funcionario is None:
-                raise ValueError(f"Funcionário {funcionario_id} não existe.")
+                raise ValueError(f"Funcionário {entrada.funcionario_id} não existe.")
 
             venda = self.venda_dao.criar(
                 Venda(
@@ -111,10 +112,14 @@ class VendaService:
             self.session.rollback()
             raise
 
-    def adicionar_item(self, venda_id: int, produto_id: int, quantidade: int) -> ItemVenda:
-        return self.adicionar_itens(venda_id, [{"produto_id": produto_id, "quantidade": quantidade}])[0]
+    def adicionar_item(self, venda_id: int, item: ItemVendaEntrada) -> ItemVenda:
+        return self.adicionar_itens(venda_id, [item])[0]
 
-    def adicionar_itens(self, venda_id: int, itens: Iterable[dict]) -> list[ItemVenda]:
+    def adicionar_itens(
+        self,
+        venda_id: int,
+        itens: Iterable[ItemVendaEntrada],
+    ) -> list[ItemVenda]:
         itens_normalizados = self._normalizar_itens(itens)
         try:
             venda = self.venda_dao.buscar_por_id(venda_id)
