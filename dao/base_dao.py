@@ -26,14 +26,8 @@ class BaseDAO(Generic[ModelT]):
             self.session.rollback()
             raise
 
-    def cadastrar(self, entidade: ModelT, *, commit: bool = True) -> ModelT:
-        return self.criar(entidade, commit=commit)
-
     def listar(self) -> list[ModelT]:
         return list(self.session.scalars(select(self.model)).all())
-
-    def listar_todos(self) -> list[ModelT]:
-        return self.listar()
 
     def buscar_por_id(self, identificador: int) -> ModelT | None:
         return self.session.get(self.model, identificador)
